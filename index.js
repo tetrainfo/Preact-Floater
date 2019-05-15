@@ -8,8 +8,9 @@ export default class App extends Component {
 		return (
 			<div>
 				<h1>
-					Git Demo. 
-					<div class="subtitle">Todo: overcome problems creating deployment image.</div>
+					Git Preact Demo 
+					<div class="subtitle">Todo: overcome problems creating production deployment image.</div>
+					<div><a href="https://github.com/tetrainfo/Preact-Floater" target="new">source code</a></div>
 				</h1>
 				<Floater/>
 			</div>

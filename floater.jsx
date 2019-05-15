@@ -19,12 +19,17 @@ export default class Floater extends Component {
         })
         this.setState({items})
     }
-    //trick: index (idx) is used to directly upldate state value
-    render({ }, { items, values }) {
+    render({ }, { items }) {
         return (
             <div style="border:1px solid black; padding:5px;">
                 <h1>Data Driven Floaters</h1> 
-                <div>Absolutely positioned elements float inside the first non-static element containing them. Use the Controls below to update the left position of the floaters.</div>
+                <ul>
+                    <li>Absolutely positioned elements float inside the first non-static parent element containing them. That's their x/y box.</li>
+                    <li>I use this technique when trying to represent data on a time or distance axis</li>
+                    <li>Left/right position is set on the element by the style tag; e.g  'left: 400px;'</li>
+                    <li>The text string is stored in each component's state data; e.g.  label: "Haven", distance: "left: 400px;",  </li>
+                    <li>Use the Controls below to update the left position of the floaters; observe the value of left changing.</li>
+                </ul>
                 <div style="width:100wv;border:1px solid black;height:60px;">&nbsp;
                     <div class="posRel">
                     { items.map( (item, idx) => ( 
