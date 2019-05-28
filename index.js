@@ -1,5 +1,7 @@
 import './style';
 import Floater from './floater';
+import Floater2d from './floater2d';
+
 import { Component } from 'preact';
 
 
@@ -13,6 +15,7 @@ export default class App extends Component {
 					<div><a href="https://github.com/tetrainfo/Preact-Floater" target="new">source code</a></div>
 				</h1>
 				<Floater/>
+				<Floater2d/>
 			</div>
 		);
 	}
