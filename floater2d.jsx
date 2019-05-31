@@ -7,6 +7,29 @@ export default class Floater extends Component {
         {ident: 3, label: "Coast XT", distance: "left: 300px;top:0px;",  title:"A 1 person plus gear kayak. 400lbs max."},
         {ident: 4, label: "Haven", distance: "left: 400px;top:10px;",  title:"A 2 person kayak. 400lbs max."}
         ] };
+    moveMe = e => {
+        let { items } = this.state;
+        const idx = e.target.attributes.idx.value;
+        const amount = 10;
+        //retrieve previous values as x,y
+        let pair = items[idx].distance.split(';');
+        let x = 0; let y = 0;
+        for ( var i=0; i<2; i++ ){
+            let digits = parseInt(pair[i].replace(/[^0-9]/g,''));
+            let sign = 1;
+            if (pair[i].indexOf('-') > -1){
+                sign = -1;
+            }
+            if (i === 1) {    
+                y = sign * digits - amount;
+            } else {
+                x = sign * digits - amount;
+            }
+        }
+        items[idx].distance="left:" + x + "px;top:" + y + "px;";
+        this.setState({items})
+
+    }
     move = e => {
         let { items } = this.state;
         //get left right top
@@ -67,7 +90,7 @@ export default class Floater extends Component {
                     { items.map( (item, idx) => ( 
                         <div class="horizontalList" style={item.distance} title={item.title} >
                             {item.label}
-                            <div style="font-size:.7em">{item.distance}</div>
+                            <div idx={idx} style="font-size:.7em" onClick={this.moveMe}>{item.distance}</div>
                         </div>
                     )) } 
                     </div> 
