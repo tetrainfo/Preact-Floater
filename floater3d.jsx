@@ -4,34 +4,26 @@ export default class Floater3d extends Component {
     state = { items: [
         {ident: 1, label: "Beach LT", distance: "left: 10px; top:20px; height:30px; width:80px; font-size:1.1em;", title:"A 1 person foldable canoe. 300lbs max"},
         {ident: 2, label: "Bay ST", distance: "left: 80px; top:-20px; height:30px; width:80px; font-size:1.1em;", title:"A 1 person foldable kayak. 300lbs max"},
-        {ident: 3, label: "Coast XT", distance: "left: 300px; top:0px; height:25px; width:80px; font-size:1.1em;",  title:"A 1 person plus gear kayak. 400lbs max."},
-        {ident: 4, label: "Haven", distance: "left: 400px; top:10px; height:25px; width:80px; font-size:1.1em;",  title:"A 2 person kayak. 400lbs max."}
+        {ident: 3, label: "Coast XT", distance: "left: 300px; top:0px; height:25px; width:90px; font-size:1.1em;",  title:"A 1 person plus gear kayak. 400lbs max."},
+        {ident: 4, label: "Haven", distance: "left: 500px; top:10px; height:25px; width:120px; font-size:1.1em;",  title:"A 2 person kayak. 400lbs max."}
         ] };
 
     morph = (coord, digits, opcode) => {
-        console.log('morph ran: ' + coord);
         switch(opcode) {
             case "moveone": {
                 switch (coord) {
                     case 0: //x attribute
                         //up
                         return digits + 10;
-                        //what about down
-                        break;
                     case 1: //y attribute
                         //left
                         return digits - 10;
-                        break;
                     case 2: //z1 pan aka height attribute
                         return digits - 5;
-                        break;
                     case 3: //z2 pan aka width attribute
                         return digits - 5;
-                        break;
                     case 4: //z3 pan aka font-size
-                        console.log(digits)
                         return digits - 0.1;
-                        break;
                     default: 
                         return digits      
                 }
@@ -40,7 +32,6 @@ export default class Floater3d extends Component {
                 switch (coord) {
                     case 1: //y attribute
                         return digits - 10;
-                        break;
                     default:
                         return digits       
                 } 
@@ -49,7 +40,6 @@ export default class Floater3d extends Component {
                 switch (coord) {
                     case 1: //y attribute
                         return digits + 10;
-                        break;
                     default:  
                         return digits     
                 } 
@@ -58,7 +48,6 @@ export default class Floater3d extends Component {
                 switch (coord) {
                     case 0: //x attribute
                         return digits - 10;
-                        break;
                     default:  
                         return digits     
                 } 
@@ -67,7 +56,6 @@ export default class Floater3d extends Component {
                 switch (coord) {
                     case 0: //x attribute
                         return digits + 10;
-                        break;
                     default:  
                         return digits     
                 } 
@@ -76,30 +64,24 @@ export default class Floater3d extends Component {
                 switch (coord) {
                     case 2: //z1 aka height attribute
                         return digits - 5;
-                        break;
                     case 3: //z2 aka width attribute
                         return digits - 5;
-                        break;
                     case 4: //z3 aka font-size
                         return (digits - 0.1).toFixed(2);
-                        break;
                     default: 
-                        return digits    
+                        return digits;    
                 } 
             }
             case "zoom": {
                 switch (coord) {
                     case 2: //z1 aka height attribute
                         return digits + 5;
-                        break;
                     case 3: //z2 aka width attribute
                         return digits + 5;
-                        break;
                     case 4: //z3 aka font-size
                         return (digits + 0.1).toFixed(2);
-                        break;
                     default: 
-                        return digits       
+                        return digits;       
                 } 
             }
         }
@@ -284,7 +266,7 @@ export default class Floater3d extends Component {
         return (
             <div style="border:1px solid black; padding:5px;">
                 <h1>Data Driven Floaters 3d</h1> 
-                <div style="border:1px solid black;">&nbsp;
+                <div style="border:1px solid black;height:100px;">&nbsp;
                     <div class="posRel">
                     { items.map( (item, idx) => ( 
                         <div class="horizontalList overflowScroll" style={item.distance} title={item.title} >
@@ -294,7 +276,7 @@ export default class Floater3d extends Component {
                     )) } 
                     </div> 
                 </div>
-                <p>------- C o n t r o l s -------------</p>  
+                <p style="margin-top:20px;">------- C o n t r o l s -------------</p>  
                 <button style="margin-left: 10px;" value="left" onClick={this.move}>Move Boats Left</button>
                 <button style="margin-left: 10px;" value="right" onClick={this.move}>Move Boats Right</button>
                 <button style="margin-left: 10px;" value="up" onClick={this.move}>Move Boats Up</button>

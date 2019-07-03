@@ -85,7 +85,7 @@ export default class Floater2d extends Component {
         return (
             <div style="border:1px solid black; padding:5px;">
                 <h1>Data Driven Floaters 2d</h1> 
-                <div style="width:100wv;border:1px solid black;height:60px;">&nbsp;
+                <div style="width:100wv;border:1px solid black;height:100px;">&nbsp;
                     <div class="posRel">
                     { items.map( (item, idx) => ( 
                         <div class="horizontalList" style={item.distance} title={item.title} >
@@ -95,7 +95,7 @@ export default class Floater2d extends Component {
                     )) } 
                     </div> 
                 </div>
-                <p>------- C o n t r o l s -------------</p>  
+                <p style="margin-top:40px;">------- C o n t r o l s -------------</p>  
                 <button style="margin-left: 10px;" value="left" onClick={this.move}>Move Boats Left</button>
                 <button style="margin-left: 10px;" value="right" onClick={this.move}>Move Boats Right</button>
                 <button style="margin-left: 10px;" value="up" onClick={this.move}>Move Boats Up</button>
