@@ -1,11 +1,10 @@
-//see also: https://preactjs.com/guide/forms for a single checkbox example that uses the checked attr of the input to set the state
 import { Component } from 'preact';
 export default class Floater3d extends Component {
     state = { items: [
-        {ident: 1, label: "Beach LT", distance: "left: 10px; top:20px; height:30px; width:80px; font-size:1.1em;", title:"A 1 person foldable canoe. 300lbs max"},
-        {ident: 2, label: "Bay ST", distance: "left: 80px; top:-20px; height:30px; width:80px; font-size:1.1em;", title:"A 1 person foldable kayak. 300lbs max"},
-        {ident: 3, label: "Coast XT", distance: "left: 300px; top:0px; height:25px; width:90px; font-size:1.1em;",  title:"A 1 person plus gear kayak. 400lbs max."},
-        {ident: 4, label: "Haven", distance: "left: 500px; top:10px; height:25px; width:120px; font-size:1.1em;",  title:"A 2 person kayak. 400lbs max."}
+        {ident: 1, label: "Beach LT", distance: "left:10px; top:20px; height:30px; width:80px; font-size:1.1em;", title:"A 1 person foldable canoe. 300lbs max"},
+        {ident: 2, label: "Bay ST", distance: "left:80px; top:-20px; height:30px; width:80px; font-size:1.1em;", title:"A 1 person foldable kayak. 300lbs max"},
+        {ident: 3, label: "Coast XT", distance: "left:300px; top:0px; height:25px; width:90px; font-size:1.1em;",  title:"A 1 person plus gear kayak. 400lbs max."},
+        {ident: 4, label: "Haven", distance: "left:500px; top:10px; height:25px; width:120px; font-size:1.1em;",  title:"A 2 person kayak. 400lbs max."}
         ] };
 
     morph = (coord, digits, opcode) => {
@@ -13,10 +12,8 @@ export default class Floater3d extends Component {
             case "moveone": {
                 switch (coord) {
                     case 0: //x attribute
-                        //up
                         return digits + 10;
                     case 1: //y attribute
-                        //left
                         return digits - 10;
                     case 2: //z1 pan aka height attribute
                         return digits - 5;
@@ -122,11 +119,12 @@ export default class Floater3d extends Component {
     }
     //move all items
     move = e => {
+        //get items array from state storage
         let { items } = this.state;
-        //get left right top
+        //get operation: up down left right pan zoom
         const direction = e.target.value;
         const amount = 10;
-        //get current distance:
+        //recover the current axis values for each item and nudge them one way or the other:
         items.map( item => {
             let styles = item.distance.split(';');
             let x = 0; let y = 0; let z1=20; let z2=130; let z3=1.1;
@@ -261,7 +259,7 @@ export default class Floater3d extends Component {
         })
         this.setState({items})
     }
-    //trick: index (idx) is used to directly upldate state value
+    //trick: index (idx) is used to directly update state value
     render({ }, { items }) {
         return (
             <div style="border:1px solid black; padding:5px;">

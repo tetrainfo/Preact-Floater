@@ -1,4 +1,4 @@
-//see also: https://preactjs.com/guide/forms for a single checkbox example that uses the checked attr of the input to set the state
+//https://preactjs.com/guide
 import { Component } from 'preact';
 export default class Floater extends Component {
     state = { items: [
