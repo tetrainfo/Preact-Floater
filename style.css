@@ -26,6 +26,10 @@ h1 {
     overflow-x: hidden;
 }
 
+.fade {
+    background-color: green !important;
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: 10px;

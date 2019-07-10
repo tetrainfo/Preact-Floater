@@ -2,6 +2,7 @@ import './style';
 import Floater from './floater';
 import Floater2d from './floater2d';
 import Floater3d from './floater3d';
+import Floater3df from './floater3df';
 
 import { Component } from 'preact';
 
@@ -18,6 +19,7 @@ export default class App extends Component {
 				<Floater/>
 				<Floater2d/>
 				<Floater3d/>
+				<Floater3df/>
 			</div>
 		);
 	}
