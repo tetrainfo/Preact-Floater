@@ -17,9 +17,14 @@ export default class Floater3df extends Component {
                     case 1: //y attribute
                         return digits - 10;
                     case 2: //z1 pan aka height attribute
-                        return digits - 5;
+                        //todo: cant get smaller than the padding. this might also need to be reduced.
+                        let ht = digits - 5;
+                        if (ht <= 0) ht = 1;
+                        return ht;
                     case 3: //z2 pan aka width attribute
-                        return digits - 5;
+                        let wid = digits - 5;
+                        if (wid <= 0) wid = 1;
+                        return wid;
                     case 4: //z3 pan aka font-size
                         return digits - 0.1;
                     case 5: //fade aka opacity+
@@ -63,9 +68,13 @@ export default class Floater3df extends Component {
             case "pan": {
                 switch (coord) {
                     case 2: //z1 aka height attribute
-                        return digits - 5;
+                        let ht = digits - 5;
+                        if (ht <= 0) ht = 1;
+                        return ht;
                     case 3: //z2 aka width attribute
-                        return digits - 5;
+                        let wid = digits - 5;
+                        if (wid <= 0) wid = 1;
+                        return wid;
                     case 4: //z3 aka font-size
                         return (digits - 0.1).toFixed(2);
                     default: 
