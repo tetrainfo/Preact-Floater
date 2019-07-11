@@ -30,6 +30,10 @@ h1 {
     background-color: green !important;
 }
 
+.pad {
+    padding: 1px !important;
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: 10px;

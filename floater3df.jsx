@@ -1,11 +1,16 @@
 import { Component } from 'preact';
 export default class Floater3df extends Component {
     state = { items: [
-        {ident: 1, label: "Beach LT", distance: "left:10px; top:20px; height:30px; width:80px; font-size:1.1em; opacity:.2;", title:"A 1 person foldable canoe. 300lbs max"},
-        {ident: 2, label: "Bay ST", distance: "left:80px; top:-20px; height:30px; width:80px; font-size:1.1em; opacity:.4;", title:"A 1 person foldable kayak. 300lbs max"},
-        {ident: 3, label: "Coast XT", distance: "left:300px; top:0px; height:25px; width:90px; font-size:1.1em; opacity:.8;",  title:"A 1 person plus gear kayak. 400lbs max."},
-        {ident: 4, label: "Haven", distance: "left:500px; top:10px; height:25px; width:120px; font-size:1.1em; opacity:.9;",  title:"A 2 person kayak. 400lbs max."}
+        {ident: 1, label: "Beach LT", distance: "left:10px; top:20px; height:30px; width:80px; font-size:1.1em; padding: 5px; opacity:.2;", title:"A 1 person foldable canoe. 300lbs max"},
+        {ident: 2, label: "Bay ST", distance: "left:80px; top:-20px; height:30px; width:80px; font-size:1.1em; padding: 1px; opacity:.4;", title:"A 1 person foldable kayak. 300lbs max"},
+        {ident: 3, label: "Coast XT", distance: "left:300px; top:0px; height:25px; width:90px; font-size:1.1em; padding: 15px; opacity:.8;",  title:"A 1 person plus gear kayak. 400lbs max."},
+        {ident: 4, label: "Haven", distance: "left:500px; top:10px; height:25px; width:120px; font-size:1.1em; padding: 15px; opacity:.9;",  title:"A 2 person kayak. 400lbs max."}
         ] };
+
+        //
+    combine = (x,y,z1,z2,z3,z4,fade) => {
+        return "left:" + x + "px; top:" + y + "px; height:" + z1 + "px; width:" + z2 + "px; font-size:"+z3+"em; padding:" + z4  + "px; opacity:" + fade;
+    }
 
     morph = (coord, digits, opcode) => {
         switch(opcode) {
@@ -17,7 +22,7 @@ export default class Floater3df extends Component {
                     case 1: //y attribute
                         return digits - 10;
                     case 2: //z1 pan aka height attribute
-                        //todo: cant get smaller than the padding. this might also need to be reduced.
+                        //when the attribute goes to 0, its removed from the style array, so minimim is 1.
                         let ht = digits - 5;
                         if (ht <= 0) ht = 1;
                         return ht;
@@ -27,7 +32,10 @@ export default class Floater3df extends Component {
                         return wid;
                     case 4: //z3 pan aka font-size
                         return digits - 0.1;
-                    case 5: //fade aka opacity+
+                    case 5: //z4  pan padding
+                        let pad = digits -1;
+                        return pad > 0 ? pad : 1;
+                    case 6: //fade aka opacity+
                         return digits - 0.1;
                     default: 
                         return digits      
@@ -69,14 +77,15 @@ export default class Floater3df extends Component {
                 switch (coord) {
                     case 2: //z1 aka height attribute
                         let ht = digits - 5;
-                        if (ht <= 0) ht = 1;
-                        return ht;
+                        return ht > 0? ht : 1;
                     case 3: //z2 aka width attribute
                         let wid = digits - 5;
-                        if (wid <= 0) wid = 1;
-                        return wid;
+                        return wid > 0 ? wid : 1;
                     case 4: //z3 aka font-size
                         return (digits - 0.1).toFixed(2);
+                    case 5: //z4 aka padding
+                        let pad = digits - 1;
+                        return pad > 0 ? pad : 1;
                     default: 
                         return digits;    
                 } 
@@ -89,13 +98,15 @@ export default class Floater3df extends Component {
                         return digits + 5;
                     case 4: //z3 aka font-size
                         return (digits + 0.1).toFixed(2);
+                    case 5: //z4 aka padding
+                        return digits + 1 ;
                     default: 
                         return digits;       
                 } 
             }
             case "fadein": {
                 switch (coord) {
-                    case 5: //y attribute
+                    case 6: //y attribute
                         return digits + 0.1;
                     default:
                         return digits       
@@ -103,7 +114,7 @@ export default class Floater3df extends Component {
             }
             case "fadeout": {
                 switch (coord) {
-                    case 5: //y attribute
+                    case 6: //y attribute
                         return digits - 0.1;
                     default:  
                         return digits     
@@ -111,14 +122,17 @@ export default class Floater3df extends Component {
             }
         }
     }
+
+
+
     //move the currently clicked item
     moveMe = e => {
         let { items } = this.state;
         const idx = e.target.attributes.idx.value;
         //retrieve previous values as x,y
         let styles = items[idx].distance.split(';');
-        let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let fade=0.2;
-        let axiscount = 5;
+        let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let z4=5; let fade=0.2;
+        let axiscount = 6;
         for ( var coord=0; coord<=axiscount; coord++ ){ //x,y,z1,z2,z3
             //recover the digits
             let digits = parseFloat(styles[coord].split(":")[1]);
@@ -140,12 +154,15 @@ export default class Floater3df extends Component {
                 z3 = this.morph( coord, digits, direction );
                 break;
             case 5:
+                z4 = this.morph( coord, digits, direction );
+                break;
+            case 6:
                 fade = this.morph( coord, digits, direction );
                 break;
             default:     
             }
         }
-        items[idx].distance="left:" + x + "px; top:" + y + "px; height:" + z1 + "px; width:" + z2 + "px; font-size:"+z3+"em; " + "opacity:" + fade;
+        items[idx].distance= this.combine(x,y,z1,z2,z3,z4,fade);
         this.setState({items})
 
     }
@@ -159,8 +176,8 @@ export default class Floater3df extends Component {
         //recover the current axis values for each item and nudge them one way or the other:
         items.map( item => {
             let styles = item.distance.split(';');
-            let x = 0; let y = 0; let z1=20; let z2=130; let z3=1.1; let fade=0.5;
-            let axiscount = 5;
+            let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let z4=5; let fade=0.2;
+            let axiscount = 6;
             for ( var coord=0; coord<=axiscount; coord++ ){ //x,y,z1,z2,z3
                 //recover the digits
                 let digits = parseFloat(styles[coord].split(":")[1]);  
@@ -183,6 +200,9 @@ export default class Floater3df extends Component {
                                 z3 = this.morph( coord, digits, direction );
                                 break;
                             case 5:
+                                z4= this.morph( coord, digits, direction );
+                                break;
+                            case 6:
                                 fade = this.morph( coord, digits, direction );
                                 break;
                             default:     
@@ -206,6 +226,9 @@ export default class Floater3df extends Component {
                                     z3 = this.morph( coord, digits, direction );
                                     break;
                                 case 5:
+                                    z4= this.morph( coord, digits, direction );
+                                    break;
+                                case 6:
                                     fade = this.morph( coord, digits, direction );
                                     break;
                                 default:     
@@ -229,6 +252,9 @@ export default class Floater3df extends Component {
                                         z3 = this.morph( coord, digits, direction );
                                         break;
                                     case 5:
+                                        z4= this.morph( coord, digits, direction );
+                                        break;
+                                    case 6:
                                         fade = this.morph( coord, digits, direction );
                                         break;
                                     default:     
@@ -252,6 +278,9 @@ export default class Floater3df extends Component {
                                         z3 = this.morph( coord, digits, direction );
                                         break;
                                     case 5:
+                                        z4= this.morph( coord, digits, direction );
+                                        break;
+                                    case 6:
                                         fade = this.morph( coord, digits, direction );
                                         break;
                                     default:     
@@ -275,6 +304,9 @@ export default class Floater3df extends Component {
                                         z3 = this.morph( coord, digits, direction  );
                                         break;
                                     case 5:
+                                        z4= this.morph( coord, digits, direction );
+                                        break;
+                                    case 6:
                                         fade = this.morph( coord, digits, direction );
                                         break;
                                     default:     
@@ -298,6 +330,9 @@ export default class Floater3df extends Component {
                                         z3 = this.morph( coord, digits, direction );
                                         break;
                                     case 5:
+                                        z4= this.morph( coord, digits, direction );
+                                        break;
+                                    case 6:
                                         fade = this.morph( coord, digits, direction );
                                         break;
                                     default:     
@@ -321,6 +356,9 @@ export default class Floater3df extends Component {
                                         z3 = this.morph( coord, digits, direction );
                                         break;
                                     case 5:
+                                        z4= this.morph( coord, digits, direction );
+                                        break;
+                                    case 6:
                                         fade = this.morph( coord, digits, direction );
                                     default:     
                                 }
@@ -343,12 +381,15 @@ export default class Floater3df extends Component {
                                         z3 = this.morph( coord, digits, direction );
                                         break;
                                     case 5:
+                                        z4= this.morph( coord, digits, direction );
+                                        break;
+                                    case 6:
                                         fade = this.morph( coord, digits, direction  );
                                     default:     
                                 }
                                 break;
                 }
-                item.distance="left:" + x + "px; top:" + y + "px; height:" + z1 + "px; width:" + z2 + "px; font-size:"+z3+"em; " + "opacity:" + fade;
+                item.distance = this.combine(x,y,z1,z2,z3,z4,fade);
             }
         })
         this.setState({items})
