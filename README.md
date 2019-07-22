@@ -2,7 +2,7 @@
 This simple example demonstrates data-driven dynamic absolute element positioning using the Preact UI library.  In real life, the data would probably come from a realtime IoT device and be served up via an API. Could be Kayak positioning.  Could be SuperTanker positioning. Could be aircraft en route. The absolute elements could be superimposed over a map for example to make it interesting.
 
 The basic idea is to use the left/top framework of absolutely positioned elements to represent information in an X/Y or time/Y fashion.
-Then add the third dimension of plan and zoom. Then a fourth of fade (opacity) The distance attributes are computed from real data as it is downloaded and processed from an API call.
+Then add the third dimension of plan and zoom. Then a fourth of fade (opacity). Then add a heading (rotation transform). The distance attributes are computed from real data as it is downloaded and processed from an API call.
 
 There is code for components that manipulate one, two and three dimensions of data.
 
