@@ -1,24 +1,41 @@
 import { Component } from 'preact';
 export default class Floater3dfr extends Component {
     state = { items: [
-        {ident: 1, label: "Beach LT", distance: "left:10px; top:20px; height:30px; width:80px; font-size:1.1em; padding: 5px; opacity:.2; transform: rotate(40deg);", title:"A 1 person foldable canoe. 300lbs max"},
-        {ident: 2, label: "Bay ST", distance: "left:80px; top:-20px; height:30px; width:80px; font-size:1.1em; padding: 1px; opacity:.4; transform: rotate(1deg);", title:"A 1 person foldable kayak. 300lbs max"},
-        {ident: 3, label: "Coast XT", distance: "left:300px; top:0px; height:25px; width:90px; font-size:1.1em; padding: 15px; opacity:.8; transform: rotate(20deg);",  title:"A 1 person plus gear kayak. 400lbs max."},
-        {ident: 4, label: "Haven", distance: "left:500px; top:10px; height:25px; width:120px; font-size:1.1em; padding: 15px; opacity:.9; transform: rotate(70deg);",  title:"A 2 person kayak. 400lbs max."}
+        {ident: 1, label: "Beach LT", distance: "left:10px; top:20px; height:30px; width:80px; font-size:1.1em; padding: 5px; opacity:.2; transform: rotate(40deg); background-color: #FFF;", title:"A 1 person foldable canoe. 300lbs max"},
+        {ident: 2, label: "Bay ST", distance: "left:80px; top:-20px; height:30px; width:80px; font-size:1.1em; padding: 1px; opacity:.4; transform: rotate(1deg); background-color: #0FF;", title:"A 1 person foldable kayak. 300lbs max"},
+        {ident: 3, label: "Coast XT", distance: "left:300px; top:0px; height:25px; width:90px; font-size:1.1em; padding: 15px; opacity:.8; transform: rotate(20deg); background-color: #0F0;",  title:"A 1 person plus gear kayak. 400lbs max."},
+        {ident: 4, label: "Haven", distance: "left:500px; top:10px; height:25px; width:120px; font-size:1.1em; padding: 15px; opacity:.9; transform: rotate(70deg); background-color: #F00;",  title:"A 2 person kayak. 400lbs max."}
         ] };
 
         //
-    combine = (x,y,z1,z2,z3,z4,fade, rotation) => {
-        return "left:" + x + "px; top:" + y + "px; height:" + z1 + "px; width:" + z2 + "px; font-size:"+z3+"em; padding:" + z4  + "px; opacity:" + fade + "; transform: rotate(" + rotation + "deg);";
+    combine = (x, y, z1, z2, z3, z4, fade, rotation, backgroundColor) => {
+        return "left:" + x + "px; top:" + y + "px; height:" + z1 + "px; width:" + z2 + "px; font-size:"+z3+"em; padding:" + z4  + "px; opacity:" + fade + "; transform: rotate(" + rotation + "deg); background-color: #" + backgroundColor.toUpperCase();
     }
 
     extractDigits = ( styles, coord ) => {
-        return parseFloat(styles[coord].split(":")[1].replace(/[^0-9\-\.]/g,"") );
+        if ( coord == 8 ) { //#RGB
+            return styles[coord].split(":")[1].replace(/[^0-F\-\.]/g,"");
+        } else {
+            return  parseFloat(styles[coord].split(":")[1].replace(/[^0-9\-\.]/g,"") );
+        }
+    }
+
+    adjustColor = ( digits ) => {
+        let tva = digits.split("");
+        for (var k = 0; k < 3; k++) {
+            tva[k] = parseInt(tva[k], 16) + k;
+            if ( tva[k] > 15 ) tva[k] = '0';
+            tva[k] = tva[k].toString(16)
+            if ( tva[k] < 0 ) tva[k] = 15;
+            tva[k] = tva[k].toString(16)
+        }
+        let tv = tva[0] + " "+ tva[1] + " " +  tva[2] + " " +tva.join('');
+        return tva.join('');
     }
 
     morph = (coord, digits, opcode) => {
         switch(opcode) {
-            //clicking on element
+            //clicking on an element cnanges each attribute slightly
             case "moveone": {
                 switch (coord) {
                     //nudge one of each of the coordinates
@@ -41,9 +58,13 @@ export default class Floater3dfr extends Component {
                         let pad = digits -1;
                         return pad > 0 ? pad : 1;
                     case 6: //fade aka opacity+
-                        return digits - 0.1;
+                        let tv = digits - 0.1;
+                        if (tv < 0) tv=0.1;
+                        return tv;
                     case 7: //rotation
                         return digits + 10;
+                    case 8: //backgroundColor
+                        return this.adjustColor(digits);
                     default: 
                         return digits      
                 }
@@ -148,6 +169,14 @@ export default class Floater3dfr extends Component {
                         return digits     
                 } 
             }
+            case "backgroundColor": {
+                switch (coord) {
+                    case 8: //bgColor attribute
+                        return this.adjustColor(digits);
+                    default:  
+                        return digits;     
+                } 
+            }
         }
     }
 
@@ -159,8 +188,8 @@ export default class Floater3dfr extends Component {
         const idx = e.target.attributes.idx.value;
         //retrieve previous values as x,y
         let styles = items[idx].distance.split(';');
-        let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let z4=5; let fade=0.2; let rotation=0.0;
-        let axiscount = 7;
+        let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let z4=5; let fade=0.2; let rotation=0.0; let backgroundColor='#FFF';
+        let axiscount = 8;
         for ( var coord=0; coord<=axiscount; coord++ ){ //x,y,z1,z2,z3,r
             //get digits
             let digits = this.extractDigits(styles, coord);
@@ -190,10 +219,13 @@ export default class Floater3dfr extends Component {
             case 7:
                 rotation = this.morph( coord, digits, direction );
                 break;
+            case 8:
+                backgroundColor = this.morph( coord, digits, direction );
+                break;
             default:     
             }
         }
-        items[idx].distance= this.combine(x,y,z1,z2,z3,z4,fade, rotation);
+        items[idx].distance= this.combine(x,y,z1,z2,z3,z4,fade, rotation, backgroundColor);
         this.setState({items})
 
     }
@@ -207,8 +239,8 @@ export default class Floater3dfr extends Component {
         //recover the current axis values for each item and nudge them one way or the other:
         items.map( item => {
             let styles = item.distance.split(';');
-            let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let z4=5; let fade=0.2; let rotation=0.0;
-            let axiscount = 7;
+            let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let z4=5; let fade=0.2; let rotation=0.0; let backgroundColor='#FFF';
+            let axiscount = 8;
             for ( var coord=0; coord<=axiscount; coord++ ){ //x, y, z1, z2, z3,z4, r
                 let digits = this.extractDigits(styles, coord);
                 switch (direction) {
@@ -237,6 +269,9 @@ export default class Floater3dfr extends Component {
                                 break;
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
+                                break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
                                 break;
                             default:     
                         }
@@ -267,6 +302,9 @@ export default class Floater3dfr extends Component {
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
                                 break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
+                                break;
                             default:     
                         }
                         break;
@@ -295,6 +333,9 @@ export default class Floater3dfr extends Component {
                                 break;
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
+                                break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
                                 break;
                             default:     
                         }
@@ -325,6 +366,9 @@ export default class Floater3dfr extends Component {
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
                                 break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
+                                break;
                             default:     
                         }
                         break;
@@ -353,6 +397,9 @@ export default class Floater3dfr extends Component {
                                 break;
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
+                                break;
+                            case 8:
+                                 backgroundColor = this.morph( coord, digits, direction );
                                 break;
                             default:     
                         }
@@ -383,6 +430,9 @@ export default class Floater3dfr extends Component {
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
                                 break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
+                                break;
                             default:     
                         }
                         break;
@@ -411,6 +461,9 @@ export default class Floater3dfr extends Component {
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
                                 break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
+                                break;
                             default:     
                         }
                         break;
@@ -438,6 +491,9 @@ export default class Floater3dfr extends Component {
                                 fade = this.morph( coord, digits, direction  );
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
+                                break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
                                 break;
                             default:     
                         }
@@ -468,6 +524,9 @@ export default class Floater3dfr extends Component {
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
                                 break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
+                                break;
                             default:     
                         }
                         break;
@@ -497,11 +556,46 @@ export default class Floater3dfr extends Component {
                             case 7:
                                 rotation = this.morph( coord, digits, direction );
                                 break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
+                                break;
+                            default:     
+                        }
+                        break;
+                case 'backgroundColor':
+                        switch (coord) {
+                            case 0:
+                                x = this.morph( coord, digits, direction );
+                                break;
+                            case 1:
+                                y = this.morph( coord, digits, direction );
+                                break;
+                            case 2:
+                                z1 = this.morph( coord, digits, direction );
+                                break;
+                            case 3:
+                                z2 = this.morph( coord, digits, direction );
+                                break;
+                            case 4:
+                                z3 = this.morph( coord, digits, direction );
+                                break;
+                            case 5:
+                                z4= this.morph( coord, digits, direction );
+                                break;
+                            case 6:
+                                fade = this.morph( coord, digits, direction  );
+                                break;
+                            case 7:
+                                rotation = this.morph( coord, digits, direction );
+                                break;
+                            case 8:
+                                backgroundColor = this.morph( coord, digits, direction );
+                                break;
                             default:     
                         }
                         break;
                 }
-                item.distance = this.combine(x,y,z1,z2,z3,z4,fade,rotation);
+                item.distance = this.combine(x,y,z1,z2,z3,z4,fade,rotation, backgroundColor);
             }
         })
         this.setState({items})
@@ -510,11 +604,11 @@ export default class Floater3dfr extends Component {
     render({ }, { items }) {
         return (
             <div style="border:1px solid black; padding:5px;">
-                <h1>Data Driven Floaters 3dfr</h1> 
+                <h1>Data Driven Floaters 3dfrb</h1> 
                 <div style="border:1px solid black;height:100px;">&nbsp;
                     <div class="posRel">
                     { items.map( (item, idx) => ( 
-                        <div class="horizontalList overflowScroll fade" style={item.distance} title={item.title} >
+                        <div class="horizontalList overflowScroll" style={item.distance} title={item.title} >
                             {item.label}
                             <div idx={idx} style="font-size:.7em" onClick={this.moveMe}>{item.distance}</div>
                         </div>
@@ -532,6 +626,7 @@ export default class Floater3dfr extends Component {
                 <button style="margin-left: 10px;" value="fadeout" onClick={this.move}>Fade Out</button>
                 <button style="margin-left: 10px;" value="rotateCW" onClick={this.move}>Rotate CW</button>
                 <button style="margin-left: 10px;" value="rotateCCW" onClick={this.move}>Rotate CWW</button>
+                <button style="margin-left: 10px;" value="backgroundColor" onClick={this.move}>Background Color Shift</button>
 
             </div>
         );
