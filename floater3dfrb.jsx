@@ -5,7 +5,7 @@ export default class Floater3dfr extends Component {
         {ident: 2, label: "Bay ST", distance: "left:80px; top:-20px; height:30px; width:80px; font-size:1.1em; padding: 1px; opacity:.4; transform: rotate(1deg); background-color: #0FF;", title:"A 1 person foldable kayak. 300lbs max"},
         {ident: 3, label: "Coast XT", distance: "left:300px; top:0px; height:25px; width:90px; font-size:1.1em; padding: 15px; opacity:.8; transform: rotate(20deg); background-color: #0F0;",  title:"A 1 person plus gear kayak. 400lbs max."},
         {ident: 4, label: "Haven", distance: "left:500px; top:10px; height:25px; width:120px; font-size:1.1em; padding: 15px; opacity:.9; transform: rotate(70deg); background-color: #F00;",  title:"A 2 person kayak. 400lbs max."}
-        ] };
+    ] };
 
         //
     combine = (x, y, z1, z2, z3, z4, fade, rotation, backgroundColor) => {
@@ -183,9 +183,8 @@ export default class Floater3dfr extends Component {
 
 
     //move the currently clicked item
-    moveMe = e => {
+    moveMe = idx => {
         let { items } = this.state;
-        const idx = e.target.attributes.idx.value;
         //retrieve previous values as x,y
         let styles = items[idx].distance.split(';');
         let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let z4=5; let fade=0.2; let rotation=0.0; let backgroundColor='#FFF';
@@ -608,12 +607,12 @@ export default class Floater3dfr extends Component {
                 <div style="border:1px solid black;height:100px;">&nbsp;
                     <div class="posRel">
                     { items.map( (item, idx) => ( 
-                        <div class="horizontalList overflowScroll" style={item.distance} title={item.title} >
+                        <div class="horizontalList overflowScroll box bounce-6" style={item.distance} title={item.title} >
                             {item.label}
-                            <div idx={idx} style="font-size:.7em" onClick={this.moveMe}>{item.distance}</div>
+                            <div idx={idx} style="font-size:.7em" onClick={() =>this.moveMe(idx)}>{item.distance}</div>
                         </div>
                     )) } 
-                    </div> 
+                    </div>  
                 </div>
                 <p style="margin-top:20px;">------- C o n t r o l s -------------</p>  
                 <button style="margin-left: 10px;" value="left" onClick={this.move}>Move Boats Left</button>

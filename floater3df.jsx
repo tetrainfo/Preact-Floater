@@ -126,9 +126,8 @@ export default class Floater3df extends Component {
 
 
     //move the currently clicked item
-    moveMe = e => {
+    moveMe = idx => {
         let { items } = this.state;
-        const idx = e.target.attributes.idx.value;
         //retrieve previous values as x,y
         let styles = items[idx].distance.split(';');
         let x = 0; let y = 0; let z1=20; let z2=70; let z3=1.1; let z4=5; let fade=0.2;
@@ -404,7 +403,7 @@ export default class Floater3df extends Component {
                     { items.map( (item, idx) => ( 
                         <div class="horizontalList overflowScroll fade" style={item.distance} title={item.title} >
                             {item.label}
-                            <div idx={idx} style="font-size:.7em" onClick={this.moveMe}>{item.distance}</div>
+                            <div idx={idx} style="font-size:.7em" onClick={() => this.moveMe(idx) }>{item.distance}</div>
                         </div>
                     )) } 
                     </div> 

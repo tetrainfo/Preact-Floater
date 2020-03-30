@@ -6,9 +6,8 @@ export default class Floater2d extends Component {
         {ident: 3, label: "Coast XT", distance: "left: 300px;top:0px;",  title:"A 1 person plus gear kayak. 400lbs max."},
         {ident: 4, label: "Haven", distance: "left: 400px;top:10px;",  title:"A 2 person kayak. 400lbs max."}
         ] };
-    moveMe = e => {
+    moveMe = idx => {
         let { items } = this.state;
-        const idx = e.target.attributes.idx.value;
         const amount = 10;
         //retrieve previous values as x,y
         let pair = items[idx].distance.split(';');
@@ -89,7 +88,7 @@ export default class Floater2d extends Component {
                     { items.map( (item, idx) => ( 
                         <div class="horizontalList" style={item.distance} title={item.title} >
                             {item.label}
-                            <div idx={idx} style="font-size:.7em" onClick={this.moveMe}>{item.distance}</div>
+                            <div idx={idx} style="font-size:.7em" onClick={() => this.moveMe(idx)}>{item.distance}</div>
                         </div>
                     )) } 
                     </div> 

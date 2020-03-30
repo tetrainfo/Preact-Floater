@@ -30,6 +30,15 @@ h1 {
     background-color: green !important;
 }
 
+.box {
+    align-self: flex-end;
+    animation-duration: .5s;
+    animation-iteration-count: 1;
+    margin: 0 auto 0 auto;
+    transform-origin: bottom;
+}
+
+
 .pad {
     padding: 1px !important;
 }
